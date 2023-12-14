@@ -88,8 +88,8 @@ int main () {
 
 void readFile() {
     // Opens "server.txt" and "testdata.txt" in read mode
-    FILE *inputFileServ = fopen("server.txt", "r");
-    FILE *inputFileData = fopen("testdata.txt", "r");
+    FILE *inputFileServ = fopen("C:\\Users\\lunap\\CLionProjects\\C\\server.txt", "r");
+    FILE *inputFileData = fopen("C:\\Users\\lunap\\CLionProjects\\C\\testdata.txt", "r");
     // Checks if inputFileServ || inputFileData != NULL, this ensures that they really got opened.
     if (!inputFileServ) {
         printf("\nServers could not be found");
@@ -412,39 +412,29 @@ void del() {
                 printf("\n!All data related to server will also be deleted!");
                 lesText("\nWrite server name ", name, MAXLEN);
 
-                if ((num = findName(name)) == -1) {
+                int num = findName(name);
+                if (num == -1) {
                     printf("\nServer \"%s\" Doesn't Exists", name);
                     return;
                 }
 
-                nr = num;
-                for (int i = (num+1-glastserv); i < 0; i++) {
-                    gserv[nr] = gserv[nr+1];
-                    nr++;
+                cleanUpServ(gserv[num]);
+                free(gserv[num]);
+
+                for (int i = num; i < glastdata; i++) {
+                    gserv[i] = gserv[i+1];
                 }
 
-                cleanUpServ(gserv[glastserv-1]);
-                free(gserv[glastserv]);
+                int numIndex;
+                while ((numIndex = findNameData(name)) != -1) {
+                    cleanUpData(gdata[numIndex]);
+                    free(gdata[numIndex]);
 
-                return;
-                for (int i = 0; i < glastdata; i++) {
-                    printf("\tx");
-                    if ((num = findNameData(name)) != -1) {
-                        nr = num;
-                        printf("\t%d",nr);
-                        tot++;
-
-                        for (int x = (num+1-glastdata); x < 0; x++) {
-                            gdata[nr] = gdata[nr+1];
-                            nr++;
-                            printf("\n%d",x);
-                        }
-                        printf("\n%d\n", glastdata);
-
-                        cleanUpData(gdata[glastdata-1]);
-                        i--;
+                    for (int i = numIndex; i < glastdata-1; i++) {
+                        gdata[i] = gdata[i+1];
                     }
                 }
+
                 printf("\t3");
                 printf("\nDeleted serv num: %s", name);
                 printf("\nAnd %d data associated to %s", tot, name);
